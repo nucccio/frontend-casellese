@@ -1,7 +1,7 @@
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
-const repoName = 'frontend-casellese'; 
+const repoName = '/frontend-casellese'; 
 
 // https://vite.dev/config/
 export default defineConfig({
