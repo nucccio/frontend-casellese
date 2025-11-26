@@ -23,7 +23,7 @@
     <!-- Category Header -->
     <section class="py-5 text-center">
         <div class="container">
-            <h2 class="fw-bold">Rezepte</h2>
+            <h2 class="fw-bold">Hallo</h2>
             <p>Rezepte</p>
         </div>
     </section>
