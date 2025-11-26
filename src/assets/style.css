@@ -1,0 +1,55 @@
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+.text-accent {
+  color: #e54c4c; /* Akzentfarbe */
+}
+
+.btn-accent {
+  background-color: #e54c4c;
+  color: white;
+  border-radius: 30px;
+  padding: 0.5rem 1.5rem;
+  transition: 0.3s;
+}
+
+.btn-accent:hover {
+  background-color: #e54c4c;
+  color: #fff;
+}
+
+.footer-link {
+  color: #ccc;
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  color: #e54c4c;
+}
+
+.image-container {
+  width: 100%; /* oder eine feste Breite */
+  height: 500px; /* Höhe des Containers */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* Verhindert, dass das Bild über den Container hinausragt */
+  background-color: #f0f0f0; /* Optional: Hintergrundfarbe */
+}
+
+.image-container img {
+  object-fit: none; /* Verhindert Skalierung */
+  object-position: center; /* Zentriert das Bild */
+  max-width: none; /* Verhindert automatische Größenanpassung */
+  max-height: none;
+}
+
+#specialbanner {
+  background-color: #e54c4c;
+  color: white;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #e54c4c !important;
+}
