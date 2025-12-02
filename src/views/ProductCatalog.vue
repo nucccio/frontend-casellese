@@ -9,6 +9,17 @@ function getProducts() {
 </script>
 
 <template>
+  <!-- Category Header -->
+  <section class="py-5 text-center">
+    <div class="container">
+      <div class="text-center mb-3">
+        <h2 class="fw-bold display-5">Rezepte</h2>
+        <p class="lead text-secondary">Wo Tradition, Liebe und reine Zutaten zusammenfinden</p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Product Grid -->
   <div class="container py-4">
     <div class="row g-4">
       <div v-for="product in getProducts()" :key="product.id" class="col-md-4">

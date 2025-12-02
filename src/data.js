@@ -10,7 +10,6 @@ export const products = [
         imageUrl: "http://nucccio.github.io/casellese-images/caciocavallo.webp",
         imageUrl_Details:
             "http://nucccio.github.io/casellese-images/caciocavallo-rezepte.webp",
-            
         ingredients: 
             "Kuhmilch, Lab, Salz, Konservierungsstoff: Natriumbenzoat (E211)",
     },
