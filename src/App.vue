@@ -17,3 +17,5 @@ import Navbar from './components/Navbar.vue';
 <style scoped>
 
 </style>
+
+<!-- Iteration 6 - Claud.AI -->
