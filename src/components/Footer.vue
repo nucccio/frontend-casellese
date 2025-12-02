@@ -21,4 +21,3 @@ import FooterLink from './FooterLink.vue';
 <style scoped>
 
 </style>
-

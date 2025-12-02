@@ -1,10 +1,13 @@
 <script setup>
 import Footer from './components/Footer.vue';
 import Navbar from './components/Navbar.vue';
-
+import SpecialBanner from './components/SpecialBanner.vue';
 </script>
 
 <template>
+  <!-- Special Banner -->
+  <SpecialBanner text="Sehen Sie unsere neuen Rezepte an ->" />
+
   <!-- Navbar -->
   <Navbar />
 
@@ -14,8 +17,9 @@ import Navbar from './components/Navbar.vue';
   <!-- Footer -->
   <Footer />
 </template>
+
 <style scoped>
 
 </style>
 
-<!-- Iteration 6 - Claud.AI -->
+<!-- Iteration 7 - Pinia State Management -->
