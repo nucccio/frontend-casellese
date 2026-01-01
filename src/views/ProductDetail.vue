@@ -1,21 +1,60 @@
 <script setup>
 import { useRoute } from 'vue-router';
-import { products, getRecipesByProductId } from '@/data.js';
-import { ref, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const route = useRoute();
 
 // Holen Sie die ID aus den Routen-Parametern
 const productId = route.params.id;
 
-// Finden Sie das Produkt anhand der ID
-const product = products.find(p => p.id == productId);
-
-// Rezepte für dieses Produkt laden
-const recipes = computed(() => getRecipesByProductId(Number(productId)));
+// Reaktive Daten
+const product = ref(null);
+const recipes = ref([]);
+const isLoading = ref(true);
+const error = ref('');
 
 // Aktives Rezept für die Anzeige
 const activeRecipe = ref(null);
+
+// Produkt vom Backend laden
+async function fetchProduct() {
+  try {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/${productId}`);
+    
+    if (response.ok) {
+      product.value = await response.json();
+    } else {
+      error.value = `Fehler beim Laden des Produkts: ${response.status} ${response.statusText}`;
+    }
+  } catch (e) {
+    error.value = `Fehler beim Laden des Produkts: ${e.message}`;
+    console.error('Could not fetch product:', e);
+  }
+}
+
+// Rezepte für das Produkt laden
+async function fetchRecipes() {
+  try {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/recipes/product/${productId}`);
+    
+    if (response.ok) {
+      recipes.value = await response.json();
+    } else {
+      // Keine Rezepte ist kein Fehler
+      recipes.value = [];
+    }
+  } catch (e) {
+    console.warn('Could not fetch recipes:', e);
+    recipes.value = [];
+  }
+}
+
+// Daten beim Mounten laden
+onMounted(async () => {
+  isLoading.value = true;
+  await Promise.all([fetchProduct(), fetchRecipes()]);
+  isLoading.value = false;
+});
 
 function showRecipe(recipe) {
     activeRecipe.value = recipe;
@@ -40,7 +79,26 @@ function formatMarkdown(text) {
 
 <template>
   <div class="container py-5">
-    <div v-if="product" class="row">
+    <!-- Loading State -->
+    <div v-if="isLoading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Lade Produkt...</span>
+      </div>
+      <p class="mt-2">Lade Produkt...</p>
+    </div>
+
+    <!-- Error State -->
+    <div v-else-if="error" class="text-center py-5">
+      <div class="alert alert-danger">
+        {{ error }}
+      </div>
+      <router-link to="/" class="btn btn-accent mt-3">
+        Zurück zum Katalog
+      </router-link>
+    </div>
+
+    <!-- Product Detail -->
+    <div v-else-if="product" class="row">
       <div class="col-md-6">
         <img :src="product.imageUrlDetails || product.imageUrl" :alt="product.title" class="img-fluid d-block mx-auto rounded-5" />
       </div>
@@ -58,7 +116,7 @@ function formatMarkdown(text) {
         </p>
 
         <!-- Rezepte Section -->
-        <div v-if="recipes.length > 0" class="mt-4">
+        <div v-if="recipes && recipes.length > 0" class="mt-4">
           <h3 class="fw-bold mb-3">🍳 Rezepte</h3>
           <div class="d-flex flex-wrap gap-2">
             <button 
