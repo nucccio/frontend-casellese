@@ -1,8 +1,10 @@
 <script setup>
 import { useAuth0 } from '@auth0/auth0-vue'
+import { useUserStore } from '@/stores/user'
 import UserMenu from './UserMenu.vue'
 
 const { isAuthenticated } = useAuth0()
+const userStore = useUserStore()
 </script>
 
 <template>
@@ -31,8 +33,8 @@ const { isAuthenticated } = useAuth0()
                     <li class="nav-item">
                         <router-link class="nav-link" to="/kontakt">Kontakt</router-link>
                     </li>
-                    <!-- Admin Link - nur für eingeloggte User sichtbar -->
-                    <li v-if="isAuthenticated" class="nav-item">
+                    <!-- Admin Link - NUR für Admins sichtbar -->
+                    <li v-if="isAuthenticated && userStore.isAdmin" class="nav-item">
                         <router-link class="nav-link text-success fw-bold" to="/product/create">
                             ➕ Neues Produkt
                         </router-link>
