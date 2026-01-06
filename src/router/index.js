@@ -8,6 +8,10 @@ import CreateProduct from '../views/CreateProduct.vue';
 import EditProduct from '../views/EditProduct.vue';
 import Profile from '../views/Profile.vue';
 import KontaktView from '../views/KontaktView.vue';
+import AGBView from '../views/Agbview.vue';
+import DatenschutzView from '../views/Datenschutzview.vue';
+import WiderrufView from '../views/WiderrufView.vue';
+import VersandView from '../views/Versandview.vue';
 
 const routes = [
   // Öffentliche Routen
@@ -31,6 +35,28 @@ const routes = [
     name: 'product',
     component: ProductDetail,
     props: true
+  },
+  
+  // Rechtliche Seiten (Footer-Links)
+  {
+    path: '/agb',
+    name: 'agb',
+    component: AGBView
+  },
+  {
+    path: '/datenschutz',
+    name: 'datenschutz',
+    component: DatenschutzView
+  },
+  {
+    path: '/widerruf',
+    name: 'widerruf',
+    component: WiderrufView
+  },
+  {
+    path: '/versand',
+    name: 'versand',
+    component: VersandView
   },
   
   // Geschützte Routen (erfordern Login)
@@ -60,3 +86,5 @@ const router = createRouter({
 });
 
 export default router;
+
+
