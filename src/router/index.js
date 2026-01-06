@@ -1,12 +1,13 @@
 // router/index.js
 import { createRouter, createWebHistory } from 'vue-router';
 import { authGuard } from '@auth0/auth0-vue';
-import HomeView from '@/views/HomeView.vue';
-import ProductCatalog from '@/views/ProductCatalog.vue';
-import ProductDetail from '@/views/ProductDetail.vue';
-import CreateProduct from '@/views/CreateProduct.vue';
-import EditProduct from '@/views/EditProduct.vue';
-import Profile from '@/views/Profile.vue';
+import HomeView from '../views/HomeView.vue';
+import ProductCatalog from '../views/ProductCatalog.vue';
+import ProductDetail from '../views/ProductDetail.vue';
+import CreateProduct from '../views/CreateProduct.vue';
+import EditProduct from '../views/EditProduct.vue';
+import Profile from '../views/Profile.vue';
+import KontaktView from '../views/KontaktView.vue';
 
 const routes = [
   // Öffentliche Routen
@@ -19,6 +20,11 @@ const routes = [
     path: '/rezepte', 
     name: 'rezepte',
     component: ProductCatalog 
+  },
+  { 
+    path: '/kontakt', 
+    name: 'kontakt',
+    component: KontaktView 
   },
   { 
     path: '/product/:id', 
