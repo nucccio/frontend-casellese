@@ -30,11 +30,11 @@ defineProps({
         <p class="card-text text-accent fw-bold mt-auto">{{ product.price }} €</p>
       </div>
     </router-link>
-    <!-- Edit Button für Admins -->
+    <!-- Edit Button für Admins (StyleTile Design) -->
     <div v-if="showEditButton" class="card-footer bg-transparent border-0 pb-3 px-3">
       <router-link 
         :to="`/product/edit/${product.id}`" 
-        class="btn btn-outline-warning btn-sm w-100"
+        class="btn btn-edit-card w-100"
       >
         ✏️ Bearbeiten
       </router-link>
@@ -46,16 +46,36 @@ defineProps({
 /* Stile zur Verbesserung der Benutzererfahrung */
 .card {
     transition: transform 0.2s, box-shadow 0.2s;
-    border: none; /* Entfernt den Standard-Bootstrap-Rand */
+    border: none;
 }
 
 .card:hover {
-  transform: translateY(-3px); /* Leichter Anhebungseffekt */
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05); /* Dezenter Schatten */
+  transform: translateY(-3px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
 }
 
-/* Stellt sicher, dass die Textfarbe im Link-Kontext dunkel bleibt */
 .text-dark {
     color: #212529 !important;
+}
+
+/* StyleTile Bearbeiten Button */
+.btn-edit-card {
+  background-color: #ffffff;
+  border: 2px solid #e54c4c;
+  color: #e54c4c;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.btn-edit-card:hover {
+  background-color: #e54c4c;
+  border-color: #e54c4c;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(229, 76, 76, 0.3);
 }
 </style>

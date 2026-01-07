@@ -12,6 +12,7 @@ const products = ref([]);
 const isLoading = ref(true);
 const error = ref('');
 const isAdmin = ref(false);
+const currentSearch = ref(''); // Aktueller Suchbegriff für Anzeige
 
 const url = `${import.meta.env.VITE_API_BASE_URL}/api/product`;
 
@@ -41,6 +42,9 @@ async function fetchProducts(filters = {}) {
     const params = new URLSearchParams();
     if (filters.name) {
       params.append('name', filters.name);
+      currentSearch.value = filters.name;
+    } else {
+      currentSearch.value = '';
     }
     if (filters.category) {
       params.append('category', filters.category);
@@ -68,10 +72,13 @@ function handleFilter(filterData) {
   fetchProducts(filterData);
 }
 
-// Bei Kategorie-Änderung in der URL auch filtern
-watch(() => route.query.category, (newCategory) => {
-  fetchProducts({ category: newCategory });
-});
+// Bei URL-Query-Änderung (search oder category) filtern
+watch(() => route.query, (newQuery) => {
+  fetchProducts({ 
+    name: newQuery.search || '', 
+    category: newQuery.category || '' 
+  });
+}, { deep: true });
 
 // Admin-Status prüfen wenn authentifiziert
 watch(isAuthenticated, (newValue) => {
@@ -81,7 +88,11 @@ watch(isAuthenticated, (newValue) => {
 });
 
 onMounted(() => {
-  fetchProducts({ category: route.query.category });
+  // Initiale Suche mit URL-Parametern
+  fetchProducts({ 
+    name: route.query.search || '', 
+    category: route.query.category || '' 
+  });
   if (isAuthenticated.value) {
     checkAdminRole();
   }
@@ -95,13 +106,17 @@ onMounted(() => {
       <div class="text-center mb-3">
         <h2 class="fw-bold display-5">Rezepte</h2>
         <p class="lead text-secondary">Wo Tradition, Liebe und reine Zutaten zusammenfinden</p>
+        <!-- Suchbegriff anzeigen wenn vorhanden -->
+        <p v-if="currentSearch" class="text-muted">
+          Suchergebnisse für: <strong>"{{ currentSearch }}"</strong>
+        </p>
       </div>
     </div>
   </section>
   
   <!-- Search and Filter -->
   <div class="container">
-    <ProductFilter @filter="handleFilter" />
+    <ProductFilter @filter="handleFilter" :initial-search="route.query.search" />
   </div>
   
   <!-- Loading State -->

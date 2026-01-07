@@ -267,7 +267,7 @@ function toggleInterest(interestId) {
 <style scoped>
 .newsletter-hero {
   background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
-                    url('https://nucccio.github.io/casellese-images/cip-kontakt.webp');
+                    url('https://nucccio.github.io/casellese-images/newsletter.webp');
   background-size: cover;
   height: 40vh;
   background-position: center;

@@ -1,5 +1,12 @@
 <script setup>
-import { ref, onMounted, defineEmits } from 'vue';
+import { ref, onMounted, watch, defineEmits, defineProps } from 'vue';
+
+const props = defineProps({
+  initialSearch: {
+    type: String,
+    default: ''
+  }
+});
 
 const emit = defineEmits(['filter']);
 
@@ -16,6 +23,13 @@ const categoryTranslations = {
   KAESE: 'Käse'
 };
 
+// Initial Search aus Props übernehmen
+watch(() => props.initialSearch, (newValue) => {
+  if (newValue) {
+    searchName.value = newValue;
+  }
+}, { immediate: true });
+
 /**
  * Fetches available categories from the backend
  */
@@ -27,9 +41,10 @@ async function fetchCategories() {
     
     if (response.ok) {
       const data = await response.json();
+      // Backend gibt Objekte mit {name, germanName} zurück
       categories.value = data.map(cat => ({
-        value: cat,
-        label: categoryTranslations[cat] || cat
+        value: cat.name,           // z.B. "BROT"
+        label: cat.germanName      // z.B. "Brot"
       }));
     } else {
       // Fallback to hardcoded categories if API fails

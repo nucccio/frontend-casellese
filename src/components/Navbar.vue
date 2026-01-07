@@ -1,10 +1,29 @@
 <script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useAuth0 } from '@auth0/auth0-vue'
 import { useUserStore } from '@/stores/user'
 import UserMenu from './UserMenu.vue'
 
+const router = useRouter()
 const { isAuthenticated } = useAuth0()
 const userStore = useUserStore()
+
+// Suchbegriff
+const searchQuery = ref('')
+
+// Suche ausführen
+function handleSearch() {
+  const query = searchQuery.value.trim()
+  if (query) {
+    // Zur Rezepte-Seite navigieren mit Suchparameter
+    router.push({ path: '/rezepte', query: { search: query } })
+  } else {
+    // Ohne Suchbegriff einfach zur Rezepte-Seite
+    router.push('/rezepte')
+  }
+  searchQuery.value = '' // Suchfeld leeren
+}
 </script>
 
 <template>
@@ -34,8 +53,14 @@ const userStore = useUserStore()
                         <router-link class="nav-link" to="/kontakt">Kontakt</router-link>
                     </li>
                 </ul>
-                <form class="d-flex ms-auto">
-                    <input class="form-control me-2" type="search" placeholder="Suche...">
+                <form class="d-flex ms-auto" @submit.prevent="handleSearch">
+                    <input 
+                      v-model="searchQuery"
+                      class="form-control me-2" 
+                      type="search" 
+                      placeholder="Rezept suchen..."
+                      @keyup.enter="handleSearch"
+                    >
                     <button class="btn btn-accent" type="submit">Suchen</button>
                 </form>
             </div>

@@ -8,10 +8,10 @@ import CreateProduct from '../views/CreateProduct.vue';
 import EditProduct from '../views/EditProduct.vue';
 import Profile from '../views/Profile.vue';
 import KontaktView from '../views/KontaktView.vue';
-import AGBView from '../views/Agbview.vue';
-import DatenschutzView from '../views/Datenschutzview.vue';
+import AGBView from '../views/AGBView.vue';
+import DatenschutzView from '../views/DatenschutzView.vue';
 import WiderrufView from '../views/WiderrufView.vue';
-import VersandView from '../views/Versandview.vue';
+import VersandView from '../views/VersandView.vue';
 import TeamView from '@/views/TeamView.vue';
 import NewsletterView from '@/views/NewsletterView.vue';
 import { useUserStore } from '@/stores/user';
@@ -124,6 +124,15 @@ const routes = [
 const router = createRouter({ 
   history: createWebHistory(import.meta.env.BASE_URL), 
   routes,
+  // Bei jedem Seitenwechsel nach oben scrollen
+  scrollBehavior(to, from, savedPosition) {
+    // Wenn der User den Zurück-Button nutzt, zur gespeicherten Position
+    if (savedPosition) {
+      return savedPosition;
+    }
+    // Ansonsten immer nach oben scrollen
+    return { top: 0, behavior: 'smooth' };
+  }
 });
 
 export default router;

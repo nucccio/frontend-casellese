@@ -1,4 +1,3 @@
-
 <script setup>
 import { useBannerStore } from '@/stores/banner';
 import Button from '@/components/Button.vue';
@@ -15,7 +14,7 @@ defineProps({
 
 <template>
     <div id="specialbanner" class="text-center py-3" v-if="bannerStore.isVisible">
-        <router-link to="/" class="banner-link">{{ text }}</router-link>&nbsp;&nbsp;
+        <router-link to="/rezepte" class="banner-link">{{ text }}</router-link>&nbsp;&nbsp;
         <Button variant="light" @click="bannerStore.hideBanner">✕</Button>
     </div>
 </template>
