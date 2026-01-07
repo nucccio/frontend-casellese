@@ -13,6 +13,7 @@ import DatenschutzView from '../views/Datenschutzview.vue';
 import WiderrufView from '../views/WiderrufView.vue';
 import VersandView from '../views/Versandview.vue';
 import TeamView from '@/views/TeamView.vue';
+import NewsletterView from '@/views/NewsletterView.vue';
 import { useUserStore } from '@/stores/user';
 
 // Admin Guard: Prüft ob User eingeloggt UND Admin ist
@@ -90,6 +91,11 @@ const routes = [
     path: '/team',
     name: 'team',
     component: TeamView
+  },
+  {
+    path: '/newsletter',
+    name: 'newsletter',
+    component: NewsletterView
   },
 
   // Geschützte Routen (erfordern Login)
