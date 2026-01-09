@@ -1,8 +1,9 @@
 name: Build Vue App and Deploy as GitHub Page
 
 on:
-  push:
-    branches: [ "main" ]
+  workflow_dispatch: # Nur manuell über GitHub UI auslösbar
+  # push:
+  #  branches: [ "main" ]
 
 permissions:
   contents: read
