@@ -150,4 +150,8 @@ H2 Datenbank mit einer eingebauten Web-Console: http://localhost:8081/h2-console
 
 ShareButton Commit
 
-githubpage delete
+githubpage - manuell disable
+1. Gehe zu https://github.com/htwg-in-schneider/frontend-casellese/actions
+2. Klicke links auf "Build Vue App and Deploy as GitHub Page"
+3. Klicke oben rechts auf ⋯ (drei Punkte)
+4. Wähle "Disable workflow"
