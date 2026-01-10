@@ -2,7 +2,7 @@
 import { useRoute } from 'vue-router';
 import { ref, onMounted, computed } from 'vue';
 import { useAuth0 } from '@auth0/auth0-vue';
-import ShareButton from '@/components/ShareButton.vue';            // Fehler bleibt wegen github deployment
+import ShareButton from '@/components/ShareButton.vue';              // Fehler wird nicht behoben, github pages deploy problem
 import FavoriteButton from '@/components/FavoriteButton.vue';
 
 const route = useRoute();
@@ -364,10 +364,10 @@ function downloadAsText(recipe) {
           </div>
 
           <div v-html="formatMarkdown(activeRecipe.text)" class="recipe-content"></div>
-
-          <!-- YouTube Video Embed (nach Zutaten & Zubereitung) -->
-          <div v-if="activeRecipe.youtubeUrl && getYoutubeEmbedUrl(activeRecipe.youtubeUrl)" class="youtube-embed mt-4">
-            <h4 class="recipe-heading">Video-Anleitung</h4>
+          
+          <!-- YouTube Video Embed (unter Zubereitung) -->
+          <div v-if="activeRecipe.youtubeUrl && getYoutubeEmbedUrl(activeRecipe.youtubeUrl)" class="youtube-embed mt-4 mb-4">
+            <h4 class="recipe-video-heading">Video-Anleitung</h4>
             <div class="ratio ratio-16x9 rounded-3 overflow-hidden shadow-sm">
               <iframe 
                 :src="getYoutubeEmbedUrl(activeRecipe.youtubeUrl)"
@@ -380,7 +380,7 @@ function downloadAsText(recipe) {
           </div>
           
           <!-- PDF Download - nur für eingeloggte User -->
-          <div class="mt-4 d-flex flex-wrap gap-2 align-items-center">
+          <div class="mt-3 d-flex flex-wrap gap-2 align-items-center">
             <button 
               v-if="isAuthenticated"
               @click="downloadRecipePdf(activeRecipe)"
@@ -408,7 +408,7 @@ function downloadAsText(recipe) {
 
         <!-- Action Buttons -->
         <div class="mt-4 d-flex flex-wrap gap-2">
-          <router-link to="/" class="btn btn-outline-secondary-custom">
+          <router-link to="/rezepte" class="btn btn-outline-secondary-custom">
             ← Zurück zum Katalog
           </router-link>
           
@@ -580,27 +580,6 @@ function downloadAsText(recipe) {
   border-radius: 8px;
 }
 
-/* YouTube Button */
-.btn-youtube {
-  background-color: #ff0000;
-  border: 2px solid #ff0000;
-  color: #ffffff;
-  border-radius: 8px;
-  font-family: 'Inter', sans-serif;
-  font-weight: 500;
-  text-decoration: none;
-  padding: 0.375rem 1rem;
-  transition: all 0.2s ease;
-}
-
-.btn-youtube:hover {
-  background-color: #cc0000;
-  border-color: #cc0000;
-  color: #ffffff;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
-}
-
 /* YouTube Video Embed */
 .youtube-embed {
   max-width: 100%;
@@ -610,10 +589,12 @@ function downloadAsText(recipe) {
   border: 1px solid #e0e0e0;
 }
 
-.youtube-embed .recipe-heading {
+.recipe-video-heading {
   color: #e54c4c;
-  font-weight: 600;
+  font-weight: 700;
+  margin-top: 1.25rem;
   margin-bottom: 0.75rem;
+  font-family: 'Inter', sans-serif;
 }
 
 /* Rezept Liste */

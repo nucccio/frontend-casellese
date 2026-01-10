@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 const form = ref({
   name: '',
@@ -12,24 +12,63 @@ const isSubmitting = ref(false);
 const submitSuccess = ref(false);
 const submitError = ref('');
 
-async function handleSubmit() {
+// Betreff-Texte für die Auswahl
+const subjectTexts = {
+  'rezept': 'Frage zu einem Rezept',
+  'tradition': 'Frage zur Tradition',
+  'besuch': 'Besuch planen',
+  'kooperation': 'Kooperationsanfrage',
+  'sonstiges': 'Sonstiges'
+};
+
+// Generiert den mailto:-Link basierend auf den Formulardaten
+const mailtoLink = computed(() => {
+  const recipient = 'info@ricetti-pittari.it';
+  const subjectText = form.value.subject ? subjectTexts[form.value.subject] : 'Kontaktanfrage';
+  const subject = encodeURIComponent(`[Ricetti in Pittari] ${subjectText}`);
+  
+  const bodyParts = [
+    `Name: ${form.value.name}`,
+    `E-Mail: ${form.value.email}`,
+    '',
+    'Nachricht:',
+    form.value.message,
+    '',
+    '---',
+    'Gesendet über das Kontaktformular von Ricetti in Pittari'
+  ];
+  const body = encodeURIComponent(bodyParts.join('\n'));
+  
+  return `mailto:${recipient}?subject=${subject}&body=${body}`;
+});
+
+// Prüft ob das Formular vollständig ausgefüllt ist
+const isFormValid = computed(() => {
+  return form.value.name.trim() !== '' && 
+         form.value.email.trim() !== '' && 
+         form.value.message.trim() !== '';
+});
+
+// Öffnet den mailto:-Link und zeigt Erfolgsmeldung
+function handleSubmit() {
+  if (!isFormValid.value) {
+    submitError.value = 'Bitte füllen Sie alle Pflichtfelder aus.';
+    return;
+  }
+  
   isSubmitting.value = true;
   submitError.value = '';
   
-  try {
-    // Hier könnte später ein API-Call kommen
-    // await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/contact`, { ... })
-    
-    // Simuliere erfolgreichen Submit
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+  // Öffne den mailto:-Link (öffnet das Standard-E-Mail-Programm des Users)
+  window.location.href = mailtoLink.value;
+  
+  // Kurze Verzögerung, dann Erfolgsmeldung anzeigen
+  setTimeout(() => {
     submitSuccess.value = true;
-    form.value = { name: '', email: '', subject: '', message: '' };
-  } catch (e) {
-    submitError.value = 'Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.';
-  } finally {
     isSubmitting.value = false;
-  }
+    // Formular zurücksetzen
+    form.value = { name: '', email: '', subject: '', message: '' };
+  }, 500);
 }
 </script>
 
@@ -125,7 +164,7 @@ async function handleSubmit() {
             <div v-if="submitSuccess" class="alert alert-success d-flex align-items-center" role="alert">
               <i class="bi bi-check-circle-fill me-2"></i>
               <div>
-                Vielen Dank für Ihre Nachricht! Wir werden uns schnellstmöglich bei Ihnen melden.
+                Ihr E-Mail-Programm wurde geöffnet. Bitte senden Sie die E-Mail ab, um Ihre Anfrage zu übermitteln.
               </div>
             </div>
             
@@ -209,7 +248,7 @@ async function handleSubmit() {
                       Wird gesendet...
                     </span>
                     <span v-else>
-                      Nachricht senden <i class="bi bi-arrow-right ms-2"></i>
+                      E-Mail öffnen <i class="bi bi-envelope ms-2"></i>
                     </span>
                   </button>
                 </div>
