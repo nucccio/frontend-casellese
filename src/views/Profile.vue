@@ -9,6 +9,16 @@ const error = ref('')
 const imageError = ref(false)
 const copied = ref(false)
 
+// Edit Mode State
+const isEditing = ref(false)
+const editForm = ref({
+  name: '',
+  email: ''
+})
+const isSaving = ref(false)
+const saveError = ref('')
+const saveSuccess = ref(false)
+
 function copyToClipboard(event) {
   event.target.select()
   navigator.clipboard.writeText(event.target.value)
@@ -48,6 +58,60 @@ const profilePicture = computed(() => {
   }
   return user.value.picture
 })
+
+// Edit Functions
+function startEditing() {
+  editForm.value = {
+    name: profileData.value?.name || '',
+    email: profileData.value?.email || ''
+  }
+  saveError.value = ''
+  saveSuccess.value = false
+  isEditing.value = true
+}
+
+function cancelEditing() {
+  isEditing.value = false
+  saveError.value = ''
+}
+
+async function saveProfile() {
+  isSaving.value = true
+  saveError.value = ''
+  saveSuccess.value = false
+
+  try {
+    const token = await getAccessTokenSilently()
+    
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/profile`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        name: editForm.value.name,
+        email: editForm.value.email
+      })
+    })
+
+    if (response.ok) {
+      profileData.value = await response.json()
+      isEditing.value = false
+      saveSuccess.value = true
+      setTimeout(() => saveSuccess.value = false, 3000)
+    } else {
+      const errorData = await response.text()
+      saveError.value = `Fehler beim Speichern: ${response.status} ${response.statusText}`
+      console.error('Save error:', errorData)
+    }
+  } catch (e) {
+    saveError.value = `Fehler beim Speichern: ${e.message}`
+    console.error('Save error:', e)
+  } finally {
+    isSaving.value = false
+  }
+}
 
 onMounted(async () => {
   if (isAuthenticated.value) {
@@ -107,15 +171,95 @@ onMounted(async () => {
 
       <!-- Profile Info Card -->
       <div class="profile-card">
+        <!-- Success Message -->
+        <div v-if="saveSuccess" class="alert alert-success mb-3">
+          <i class="bi bi-check-circle-fill me-2"></i>
+          Profil erfolgreich gespeichert!
+        </div>
+
         <div v-if="profileData" class="profile-info">
-          <h1 class="profile-name">{{ profileData.name }}</h1>
-          <p class="profile-email">
-            <i class="bi bi-envelope-fill"></i>
-            {{ profileData.email }}
-          </p>
+          <!-- View Mode -->
+          <template v-if="!isEditing">
+            <h1 class="profile-name">{{ profileData.name }}</h1>
+            
+            <!-- E-Mail und Edit Button in einer Zeile -->
+            <div class="email-edit-row">
+              <p class="profile-email">
+                <i class="bi bi-envelope-fill"></i>
+                {{ profileData.email }}
+              </p>
+              
+              <!-- Edit Button -->
+              <button @click="startEditing" class="btn-edit-profile">
+                <i class="bi bi-pencil-fill"></i>
+                Profil bearbeiten
+              </button>
+            </div>
+          </template>
+
+          <!-- Edit Mode -->
+          <template v-else>
+            <form @submit.prevent="saveProfile" class="edit-form">
+              <div class="form-group">
+                <label for="editName" class="form-label">Name</label>
+                <input
+                  type="text"
+                  id="editName"
+                  v-model="editForm.name"
+                  class="form-control"
+                  placeholder="Ihr Name"
+                  required
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="editEmail" class="form-label">E-Mail</label>
+                <input
+                  type="email"
+                  id="editEmail"
+                  v-model="editForm.email"
+                  class="form-control"
+                  placeholder="ihre@email.de"
+                  required
+                >
+              </div>
+
+              <!-- Error Message -->
+              <div v-if="saveError" class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                {{ saveError }}
+              </div>
+
+              <!-- Form Buttons -->
+              <div class="form-buttons">
+                <button 
+                  type="button" 
+                  @click="cancelEditing" 
+                  class="btn-cancel"
+                  :disabled="isSaving"
+                >
+                  Abbrechen
+                </button>
+                <button 
+                  type="submit" 
+                  class="btn-save"
+                  :disabled="isSaving"
+                >
+                  <span v-if="isSaving">
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Speichern...
+                  </span>
+                  <span v-else>
+                    <i class="bi bi-check-lg me-1"></i>
+                    Speichern
+                  </span>
+                </button>
+              </div>
+            </form>
+          </template>
           
-          <!-- Stats / Quick Info -->
-          <div class="profile-stats">
+          <!-- Stats / Quick Info (nur im View Mode) -->
+          <div v-if="!isEditing" class="profile-stats">
             <div class="stat-item">
               <i class="bi bi-calendar3"></i>
               <span>Mitglied seit heute</span>
@@ -126,8 +270,8 @@ onMounted(async () => {
             </div>
           </div>
 
-          <!-- Quick Actions -->
-          <div class="profile-actions">
+          <!-- Quick Actions (nur im View Mode) -->
+          <div v-if="!isEditing" class="profile-actions">
             <router-link to="/rezepte" class="action-btn primary">
               <i class="bi bi-book"></i>
               Rezepte durchstöbern
@@ -152,8 +296,8 @@ onMounted(async () => {
         </div>
       </div>
 
-      <!-- Debug Section (Collapsed) -->
-      <details class="debug-section">
+      <!-- Debug Section (nur für Admins) -->
+      <details v-if="profileData && profileData.role === 'ADMIN'" class="debug-section">
         <summary class="debug-toggle">
           <i class="bi bi-code-slash"></i>
           Entwickler-Informationen
@@ -300,6 +444,7 @@ onMounted(async () => {
   align-items: center;
   gap: 6px;
   margin-top: 1rem;
+  margin-bottom: 1rem;
   padding: 0.5rem 1rem;
   background: white;
   border-radius: 20px;
@@ -324,7 +469,7 @@ onMounted(async () => {
   border-radius: var(--radius);
   box-shadow: var(--shadow-md);
   padding: 2rem;
-  margin-top: 1.5rem;
+  margin-top: 2.5rem;
 }
 
 .profile-info {
@@ -335,7 +480,17 @@ onMounted(async () => {
   font-size: 1.75rem;
   font-weight: 700;
   color: var(--text-dark);
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* E-Mail und Edit Button in einer Zeile */
+.email-edit-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
 }
 
 .profile-email {
@@ -344,11 +499,144 @@ onMounted(async () => {
   gap: 8px;
   color: var(--text-muted);
   font-size: 0.95rem;
-  margin-bottom: 1.5rem;
+  margin: 0;
 }
 
 .profile-email i {
   color: var(--accent);
+}
+
+/* Edit Profile Button */
+.btn-edit-profile {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.6rem 1.25rem;
+  background: transparent;
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-edit-profile:hover {
+  background: var(--accent);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(229, 76, 76, 0.3);
+}
+
+/* Edit Form */
+.edit-form {
+  text-align: left;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(229, 76, 76, 0.1);
+}
+
+.form-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.btn-cancel {
+  padding: 0.75rem 1.5rem;
+  background: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  color: var(--text-dark);
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cancel:hover:not(:disabled) {
+  background: #e9ecef;
+  border-color: #ced4da;
+}
+
+.btn-cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-save {
+  padding: 0.75rem 1.5rem;
+  background: var(--accent);
+  border: 2px solid var(--accent);
+  color: white;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-save:hover:not(:disabled) {
+  background: var(--accent-dark);
+  border-color: var(--accent-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(229, 76, 76, 0.3);
+}
+
+.btn-save:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Alert Styles */
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}
+
+.alert-success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.alert-danger {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  margin-top: 1rem;
 }
 
 /* Stats */
@@ -609,6 +897,15 @@ details[open] .toggle-icon {
   
   .profile-name {
     font-size: 1.5rem;
+  }
+
+  .form-buttons {
+    flex-direction: column;
+  }
+
+  .btn-cancel,
+  .btn-save {
+    width: 100%;
   }
 }
 </style>
