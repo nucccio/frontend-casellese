@@ -15,6 +15,7 @@ const product = ref({
   description: '',
   ingredients: '',
   category: '',
+  price: 0,
 });
 
 const categories = ref([]);
@@ -112,6 +113,21 @@ onMounted(() => {
               </option>
             </select>
           </div>
+
+          <!-- Preis 
+          <div class="mb-3">
+            <label for="productPrice" class="form-label">Preis (€) *</label>
+            <input 
+              type="number" 
+              id="productPrice" 
+              class="form-control" 
+              v-model.number="product.price" 
+              placeholder="z.B. 9.99"
+              step="0.01"
+              min="0"
+              required 
+            />
+          </div> -->
 
           <!-- Bild-URL -->
           <div class="mb-3">
