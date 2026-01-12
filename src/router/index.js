@@ -17,6 +17,7 @@ import NewsletterView from '@/views/NewsletterView.vue';
 import AboutView from '@/views/AboutView.vue';
 import ImpressumView from '@/views/ImpressumView.vue';
 import FavoritesView from '@/views/FavoritesView.vue';
+import AdminUsersView from '@/views/AdminUsersView.vue';
 import { useUserStore } from '@/stores/user';
 
 // Admin Guard: Prüft ob User eingeloggt UND Admin ist
@@ -136,6 +137,12 @@ const routes = [
     path: '/product/edit/:id',
     name: 'edit-product',
     component: EditProduct,
+    beforeEnter: adminGuard  // Nur Admins
+  },
+  {
+    path: '/admin/users',
+    name: 'admin-users',
+    component: AdminUsersView,
     beforeEnter: adminGuard  // Nur Admins
   }
 ];

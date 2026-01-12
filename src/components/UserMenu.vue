@@ -1,8 +1,10 @@
 <script setup>
 import { useAuth0 } from '@auth0/auth0-vue'
 import { computed, ref } from 'vue'
+import { useUserStore } from '@/stores/user'
 
 const { loginWithRedirect, logout, user, isAuthenticated, isLoading } = useAuth0()
+const userStore = useUserStore()
 const imageError = ref(false)
 
 const handleLogin = () => {
@@ -27,6 +29,9 @@ const profilePicture = computed(() => {
   }
   return user.value.picture
 })
+
+// Prüfe ob User Admin ist
+const isAdmin = computed(() => userStore.isAdmin)
 </script>
 
 <template>
@@ -42,13 +47,32 @@ const profilePicture = computed(() => {
       </a>
       <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser1" style="right: 0; left: auto;">
         <li>
-          <router-link class="dropdown-item" to="/profile">Profil</router-link>
+          <router-link class="dropdown-item" to="/profile">
+            <i class="bi bi-person me-2"></i>Profil
+          </router-link>
         </li>
+        <!-- Admin-Bereich -->
+        <template v-if="isAdmin">
+          <li><hr class="dropdown-divider"></li>
+          <li class="dropdown-header text-muted small">Administration</li>
+          <li>
+            <router-link class="dropdown-item" to="/admin/users">
+              <i class="bi bi-people me-2"></i>Nutzerverwaltung
+            </router-link>
+          </li>
+          <li>
+            <router-link class="dropdown-item" to="/product/create">
+              <i class="bi bi-plus-circle me-2"></i>Produkt erstellen
+            </router-link>
+          </li>
+        </template>
         <li>
           <hr class="dropdown-divider">
         </li>
         <li>
-          <button class="dropdown-item" @click="handleLogout">Abmelden</button>
+          <button class="dropdown-item" @click="handleLogout">
+            <i class="bi bi-box-arrow-right me-2"></i>Abmelden
+          </button>
         </li>
       </ul>
     </div>
