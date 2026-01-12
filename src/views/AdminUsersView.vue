@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useAuth0 } from '@auth0/auth0-vue';
 import { useUserStore } from '@/stores/user';
 
@@ -22,6 +22,23 @@ const editForm = ref({
   role: ''
 });
 const isSaving = ref(false);
+
+// E-Mail Validierung
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Computed: E-Mail Fehlermeldung
+const emailError = computed(() => {
+  if (!editForm.value.email.trim()) return '';
+  if (!emailRegex.test(editForm.value.email)) {
+    return 'Bitte geben Sie eine gültige E-Mail-Adresse ein';
+  }
+  return '';
+});
+
+// Computed: Ist das Formular gültig?
+const isFormValid = computed(() => {
+  return editForm.value.email.trim().length === 0 || emailRegex.test(editForm.value.email);
+});
 
 // Alle Nutzer laden
 async function fetchUsers() {
@@ -70,6 +87,12 @@ function closeEditModal() {
 // Nutzer speichern
 async function saveUser() {
   if (!editingUser.value) return;
+  
+  // E-Mail Validierung
+  if (editForm.value.email && !emailRegex.test(editForm.value.email)) {
+    error.value = 'Bitte geben Sie eine gültige E-Mail-Adresse ein.';
+    return;
+  }
   
   isSaving.value = true;
   error.value = '';
@@ -245,9 +268,13 @@ onMounted(() => {
                 type="email" 
                 id="userEmail" 
                 class="form-control" 
+                :class="{ 'is-invalid': emailError }"
                 v-model="editForm.email"
                 placeholder="email@example.com"
               />
+              <div v-if="emailError" class="invalid-feedback" style="display: block;">
+                {{ emailError }}
+              </div>
             </div>
             
             <!-- Rolle -->
@@ -274,7 +301,7 @@ onMounted(() => {
               <button 
                 type="submit" 
                 class="btn btn-accent"
-                :disabled="isSaving"
+                :disabled="isSaving || !isFormValid"
               >
                 <span v-if="isSaving">
                   <span class="spinner-border spinner-border-sm me-1"></span>

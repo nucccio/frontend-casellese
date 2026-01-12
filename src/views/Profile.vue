@@ -19,6 +19,25 @@ const isSaving = ref(false)
 const saveError = ref('')
 const saveSuccess = ref(false)
 
+// E-Mail Validierung
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+// Computed: Ist das Formular gültig?
+const isFormValid = computed(() => {
+  return editForm.value.name.trim().length > 0 && 
+         editForm.value.email.trim().length > 0 &&
+         emailRegex.test(editForm.value.email)
+})
+
+// Computed: E-Mail Fehlermeldung
+const emailError = computed(() => {
+  if (!editForm.value.email.trim()) return ''
+  if (!emailRegex.test(editForm.value.email)) {
+    return 'Bitte geben Sie eine gültige E-Mail-Adresse ein'
+  }
+  return ''
+})
+
 function copyToClipboard(event) {
   event.target.select()
   navigator.clipboard.writeText(event.target.value)
@@ -76,6 +95,18 @@ function cancelEditing() {
 }
 
 async function saveProfile() {
+  // Validierung prüfen
+  if (!isFormValid.value) {
+    if (!editForm.value.name.trim()) {
+      saveError.value = 'Bitte geben Sie einen Namen ein.'
+      return
+    }
+    if (!editForm.value.email.trim() || !emailRegex.test(editForm.value.email)) {
+      saveError.value = 'Bitte geben Sie eine gültige E-Mail-Adresse ein.'
+      return
+    }
+  }
+
   isSaving.value = true
   saveError.value = ''
   saveSuccess.value = false
@@ -219,9 +250,13 @@ onMounted(async () => {
                   id="editEmail"
                   v-model="editForm.email"
                   class="form-control"
+                  :class="{ 'is-invalid': emailError }"
                   placeholder="ihre@email.de"
                   required
                 >
+                <div v-if="emailError" class="invalid-feedback" style="display: block;">
+                  {{ emailError }}
+                </div>
               </div>
 
               <!-- Error Message -->
@@ -243,7 +278,7 @@ onMounted(async () => {
                 <button 
                   type="submit" 
                   class="btn-save"
-                  :disabled="isSaving"
+                  :disabled="isSaving || !isFormValid"
                 >
                   <span v-if="isSaving">
                     <span class="spinner-border spinner-border-sm me-2"></span>

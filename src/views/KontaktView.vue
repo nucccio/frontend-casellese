@@ -149,9 +149,9 @@ function handleSubmit() {
           <!-- Social Media -->
           <div class="mt-5">
             <h5 class="fw-bold mb-3">Folgen Sie uns</h5>
-            <a href="#" class="social-link me-3"><i class="bi bi-facebook fs-4"></i></a>
-            <a href="#" class="social-link me-3"><i class="bi bi-instagram fs-4"></i></a>
-            <a href="#" class="social-link"><i class="bi bi-youtube fs-4"></i></a>
+            <a href="https://www.facebook.com/caselleinpittari/?locale=it_IT" target="_blank" rel="noopener noreferrer" class="social-link me-3"><i class="bi bi-facebook fs-4"></i></a>
+            <a href="https://www.instagram.com/caselleinpittari/" target="_blank" rel="noopener noreferrer" class="social-link me-3"><i class="bi bi-instagram fs-4"></i></a>
+            <a href="https://www.youtube.com/@caselleinpittari" target="_blank" rel="noopener noreferrer" class="social-link"><i class="bi bi-youtube fs-4"></i></a>
           </div>
         </div>
         

@@ -99,7 +99,7 @@ async function updateProduct() {
     }
 
     alert('Produkt erfolgreich aktualisiert!');
-    router.push('/');
+    router.push('/rezepte');
   } catch (error) {
     console.error('Fehler beim Aktualisieren des Produkts:', error);
     errorMessage.value = error.message || 'Produkt konnte nicht aktualisiert werden.';
@@ -134,7 +134,7 @@ async function deleteProduct() {
     }
 
     alert('Produkt erfolgreich gelöscht!');
-    router.push('/');
+    router.push('/rezepte');
   } catch (error) {
     console.error('Fehler beim Löschen des Produkts:', error);
     errorMessage.value = error.message || 'Produkt konnte nicht gelöscht werden.';
