@@ -91,13 +91,10 @@ async function fetchRecipes() {
     
     if (response.ok) {
       recipes.value = await response.json();
-      console.log('Loaded recipes:', recipes.value);
     } else {
-      console.log('No recipes found for product', productId);
       recipes.value = [];
     }
   } catch (e) {
-    console.warn('Could not fetch recipes:', e);
     recipes.value = [];
   }
 }
@@ -335,7 +332,7 @@ function downloadAsText(recipe) {
 
         <!-- Rezepte Section -->
         <div v-if="recipes && recipes.length > 0" class="mt-4">
-          <h3 class="fw-bold mb-3">🤌 Rezepte</h3>
+          <h3 class="fw-bold mb-3">Rezepte</h3>
           <div class="recipe-list">
             <div 
               v-for="recipe in recipes" 
@@ -367,7 +364,7 @@ function downloadAsText(recipe) {
           
           <!-- YouTube Video Embed (unter Zubereitung) -->
           <div v-if="activeRecipe.youtubeUrl && getYoutubeEmbedUrl(activeRecipe.youtubeUrl)" class="youtube-embed mt-4 mb-4">
-            <h4 class="recipe-video-heading">Video-Anleitung</h4>
+            <h5 class="recipe-video-heading">Video-Anleitung</h5>
             <div class="ratio ratio-16x9 rounded-3 overflow-hidden shadow-sm">
               <iframe 
                 :src="getYoutubeEmbedUrl(activeRecipe.youtubeUrl)"
@@ -392,7 +389,7 @@ function downloadAsText(recipe) {
                 Generiere PDF...
               </span>
               <span v-else>
-                📄 Rezept als PDF herunterladen
+                <i class="bi bi-file-earmark-pdf me-1"></i>Rezept als PDF herunterladen
               </span>
             </button>
             
@@ -418,7 +415,7 @@ function downloadAsText(recipe) {
             :to="`/product/edit/${product.id}`" 
             class="btn btn-edit-admin"
           >
-            ✏️ Bearbeiten
+            <i class="bi bi-pencil me-1"></i>Bearbeiten
           </router-link>
         </div>
       </div>
@@ -591,7 +588,7 @@ function downloadAsText(recipe) {
 
 .recipe-video-heading {
   color: #e54c4c;
-  font-weight: 700;
+  font-weight: 600;
   margin-top: 1.25rem;
   margin-bottom: 0.75rem;
   font-family: 'Inter', sans-serif;

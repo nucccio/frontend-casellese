@@ -2,6 +2,28 @@
 
 This template should help get you started developing with Vue 3 in Vite.
 
+## Umgebungsvariablen / Environment Variables
+
+Das Frontend benötigt die Backend-API-URL als Umgebungsvariable:
+
+### Entwicklung (Development)
+
+Erstelle eine `.env` Datei im Root-Verzeichnis:
+
+```env
+VITE_API_BASE_URL=http://localhost:8081
+```
+
+### Produktion (Production)
+
+Setze die Umgebungsvariable beim Build oder im Hosting-Provider:
+
+```env
+VITE_API_BASE_URL=https://deine-api-domain.com
+```
+
+**Hinweis:** In `ProductFilter.vue` gibt es einen Fallback auf `http://localhost:8081`, falls die Umgebungsvariable nicht gesetzt ist. Für Produktion sollte `VITE_API_BASE_URL` immer explizit gesetzt werden.
+
 ## Recommended IDE Setup
 
 [VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).

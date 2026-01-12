@@ -31,7 +31,7 @@ async function fetchCategories() {
       categories.value = await response.json();
     }
   } catch (error) {
-    console.error('Error fetching categories:', error);
+    // Fehler still ignorieren
   }
 }
 
@@ -66,7 +66,6 @@ async function createProduct() {
     alert('Produkt erfolgreich erstellt!');
     router.push('/');
   } catch (error) {
-    console.error('Fehler beim Erstellen des Produkts:', error);
     errorMessage.value = error.message || 'Produkt konnte nicht erstellt werden.';
   } finally {
     isSubmitting.value = false;
@@ -178,17 +177,22 @@ onMounted(() => {
           <!-- Bildvorschau -->
           <div v-if="product.imageUrl" class="mb-4">
             <label class="form-label">Bildvorschau</label>
-            <div class="border rounded p-2">
-              <img :src="product.imageUrl" alt="Vorschau" class="img-fluid" style="max-height: 200px;" />
+            <div class="text-center">
+              <img 
+                :src="product.imageUrl" 
+                alt="Produktvorschau" 
+                class="img-fluid rounded shadow" 
+                style="max-height: 200px;"
+              />
             </div>
           </div>
 
           <!-- Buttons -->
           <div class="d-flex gap-2">
-            <NavButton variant="secondary" to="/">Abbrechen</NavButton>
-            <Button type="submit" variant="accent" :disabled="isSubmitting">
-              {{ isSubmitting ? 'Erstelle...' : 'Produkt erstellen' }}
+            <Button type="submit" :disabled="isSubmitting">
+              {{ isSubmitting ? 'Wird erstellt...' : 'Produkt erstellen' }}
             </Button>
+            <NavButton to="/" variant="secondary">Abbrechen</NavButton>
           </div>
         </form>
       </div>
@@ -197,14 +201,15 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.btn-secondary {
-  background-color: #6c757d;
-  border-color: #6c757d;
+.btn-accent {
+  background-color: #e54c4c;
+  border-color: #e54c4c;
   color: white;
 }
 
-.btn-secondary:hover {
-  background-color: #5a6268;
-  border-color: #545b62;
+.btn-accent:hover {
+  background-color: #d43c3c;
+  border-color: #d43c3c;
+  color: white;
 }
 </style>

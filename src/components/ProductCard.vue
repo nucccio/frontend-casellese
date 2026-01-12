@@ -36,7 +36,7 @@ defineProps({
         :to="`/product/edit/${product.id}`" 
         class="btn btn-edit-card w-100"
       >
-        ✏️ Bearbeiten
+        <i class="bi bi-pencil me-1"></i>Bearbeiten
       </router-link>
     </div>
   </div>

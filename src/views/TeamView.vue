@@ -235,7 +235,7 @@ const handleImageError = (event, member) => {
 .btn-accent {
   background-color: #e54c4c;
   color: white;
-  border-radius: 30px;
+  border-radius: 8px;
   padding: 0.6rem 1.8rem;
   border: none;
   font-weight: 500;

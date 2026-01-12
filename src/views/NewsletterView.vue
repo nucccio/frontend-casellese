@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 const form = ref({
   email: '',
@@ -8,36 +8,12 @@ const form = ref({
   interests: []
 });
 
-const isSubmitting = ref(false);
-const submitSuccess = ref(false);
-const submitError = ref('');
-
 const interestOptions = [
   { id: 'rezepte', label: 'Neue Rezepte', icon: 'bi-book' },
   { id: 'tradition', label: 'Tradition & Geschichte', icon: 'bi-clock-history' },
   { id: 'events', label: 'Events & Veranstaltungen', icon: 'bi-calendar-event' },
   { id: 'tipps', label: 'Koch-Tipps & Tricks', icon: 'bi-lightbulb' }
 ];
-
-async function handleSubmit() {
-  isSubmitting.value = true;
-  submitError.value = '';
-  
-  try {
-    // Hier könnte später ein API-Call kommen
-    // await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/newsletter`, { ... })
-    
-    // Simuliere erfolgreichen Submit
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    submitSuccess.value = true;
-    form.value = { email: '', firstName: '', lastName: '', interests: [] };
-  } catch (e) {
-    submitError.value = 'Anmeldung konnte nicht abgeschlossen werden. Bitte versuchen Sie es später erneut.';
-  } finally {
-    isSubmitting.value = false;
-  }
-}
 
 function toggleInterest(interestId) {
   const index = form.value.interests.indexOf(interestId);
@@ -47,6 +23,36 @@ function toggleInterest(interestId) {
     form.value.interests.push(interestId);
   }
 }
+
+// Mailto-Link generieren
+const mailtoLink = computed(() => {
+  const to = 'newsletter@caselleinpittari.it';
+  const subject = encodeURIComponent('Newsletter-Anmeldung');
+  
+  // Interessen als lesbare Liste
+  const interestLabels = form.value.interests
+    .map(id => interestOptions.find(opt => opt.id === id)?.label)
+    .filter(Boolean)
+    .join(', ');
+  
+  const bodyParts = [
+    'Ich möchte mich für den Newsletter anmelden.',
+    '',
+    `Vorname: ${form.value.firstName || '-'}`,
+    `Nachname: ${form.value.lastName || '-'}`,
+    `E-Mail: ${form.value.email || '-'}`,
+    '',
+    `Interessen: ${interestLabels || 'Keine angegeben'}`,
+    '',
+    'Bitte nehmen Sie mich in den Verteiler auf.',
+    '',
+    'Mit freundlichen Grüßen'
+  ];
+  
+  const body = encodeURIComponent(bodyParts.join('\n'));
+  
+  return `mailto:${to}?subject=${subject}&body=${body}`;
+});
 </script>
 
 <template>
@@ -114,28 +120,16 @@ function toggleInterest(interestId) {
 
       <div class="card p-4 p-lg-5 rounded-4 shadow-sm">
         
-        <!-- Erfolgs-Nachricht -->
-        <div v-if="submitSuccess" class="text-center py-4">
-          <div class="success-icon mb-4">
-            <i class="bi bi-check-circle-fill text-success display-1"></i>
-          </div>
-          <h3 class="fw-bold mb-3">Grazie mille!</h3>
-          <p class="text-secondary mb-4">
-            Vielen Dank für Ihre Anmeldung zu unserem Newsletter.<br>
-            Sie erhalten in Kürze eine Bestätigungs-E-Mail.
-          </p>
-          <router-link to="/" class="btn btn-accent btn-lg">
-            Zurück zur Startseite <i class="bi bi-arrow-right ms-2"></i>
-          </router-link>
-        </div>
-        
         <!-- Anmelde-Formular -->
-        <form v-else @submit.prevent="handleSubmit">
+        <form @submit.prevent>
           
-          <!-- Fehler-Nachricht -->
-          <div v-if="submitError" class="alert alert-danger d-flex align-items-center mb-4" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            <div>{{ submitError }}</div>
+          <!-- Info-Hinweis -->
+          <div class="alert alert-info d-flex align-items-start mb-4" role="alert">
+            <i class="bi bi-info-circle-fill me-2 mt-1"></i>
+            <div>
+              <strong>So funktioniert's:</strong> Füllen Sie das Formular aus und klicken Sie auf "Newsletter abonnieren". 
+              Es öffnet sich Ihr E-Mail-Programm mit einer vorbereiteten Nachricht.
+            </div>
           </div>
           
           <div class="row g-3">
@@ -216,21 +210,14 @@ function toggleInterest(interestId) {
               </div>
             </div>
             
-            <!-- Submit Button -->
+            <!-- Submit Button als mailto: Link -->
             <div class="col-12 mt-4">
-              <button 
-                type="submit" 
+              <a 
+                :href="mailtoLink" 
                 class="btn btn-accent btn-lg w-100"
-                :disabled="isSubmitting"
               >
-                <span v-if="isSubmitting">
-                  <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-                  Wird angemeldet...
-                </span>
-                <span v-else>
-                  Newsletter abonnieren <i class="bi bi-arrow-right ms-2"></i>
-                </span>
-              </button>
+                Newsletter abonnieren <i class="bi bi-envelope ms-2"></i>
+              </a>
             </div>
             
           </div>
@@ -335,20 +322,5 @@ function toggleInterest(interestId) {
 .form-check-input:checked {
   background-color: #e54c4c;
   border-color: #e54c4c;
-}
-
-.success-icon {
-  animation: scaleIn 0.5s ease;
-}
-
-@keyframes scaleIn {
-  0% {
-    transform: scale(0);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
 }
 </style>

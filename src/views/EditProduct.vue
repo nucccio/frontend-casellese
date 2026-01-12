@@ -182,9 +182,6 @@ async function saveRecipe() {
 
   isSubmitting.value = true;
 
-  // Debug: Zeige was gesendet wird
-  console.log('Sending recipe data:', JSON.stringify(recipeForm.value, null, 2));
-
   try {
     const token = await getAccessTokenSilently();
     
@@ -198,10 +195,6 @@ async function saveRecipe() {
         },
         body: JSON.stringify(recipeForm.value)
       });
-
-      // Debug: Zeige Antwort
-      const responseData = await response.json();
-      console.log('Server response:', responseData);
 
       if (!response.ok) {
         throw new Error(`Fehler beim Aktualisieren: ${response.status}`);
@@ -218,10 +211,6 @@ async function saveRecipe() {
         },
         body: JSON.stringify(recipeForm.value)
       });
-
-      // Debug: Zeige Antwort
-      const responseData = await response.json();
-      console.log('Server response:', responseData);
 
       if (!response.ok) {
         throw new Error(`Fehler beim Erstellen: ${response.status}`);
@@ -291,7 +280,7 @@ onMounted(async () => {
     <!-- Content -->
     <div v-else class="row justify-content-center">
       <div class="col-12 col-lg-10">
-        <h2 class="fw-bold mb-4">✏️ Produkt bearbeiten</h2>
+        <h2 class="fw-bold mb-4"><i class="bi bi-pencil-square me-2"></i>Produkt bearbeiten</h2>
 
         <!-- Error Message -->
         <div v-if="errorMessage" class="alert alert-danger" role="alert">
@@ -303,7 +292,7 @@ onMounted(async () => {
           <div class="col-12 col-md-6 mb-4">
             <div class="card border-0 shadow-sm rounded-4">
               <div class="card-body p-4">
-                <h4 class="fw-bold mb-3">📦 Produktdaten</h4>
+                <h4 class="fw-bold mb-3"><i class="bi bi-box-seam me-2"></i>Produktdaten</h4>
 
                 <!-- Bildvorschau -->
                 <div v-if="product.imageUrl" class="text-center mb-4">
@@ -352,19 +341,6 @@ onMounted(async () => {
                     </select>
                   </div>
 
-                  <!-- Preis -->
-                  <div class="mb-3">
-                    <label for="productPrice" class="form-label">Preis (€)</label>
-                    <input 
-                      type="number" 
-                      id="productPrice" 
-                      class="form-control" 
-                      v-model="product.price" 
-                      step="0.01"
-                      min="0"
-                    />
-                  </div>
-
                   <!-- Bild-URL -->
                   <div class="mb-3">
                     <label for="productImageUrl" class="form-label">Bild-URL (Vorschau)</label>
@@ -373,17 +349,6 @@ onMounted(async () => {
                       id="productImageUrl" 
                       class="form-control" 
                       v-model="product.imageUrl" 
-                    />
-                  </div>
-
-                  <!-- Detail Bild-URL -->
-                  <div class="mb-3">
-                    <label for="productImageUrlDetails" class="form-label">Bild-URL (Detailseite)</label>
-                    <input 
-                      type="url" 
-                      id="productImageUrlDetails" 
-                      class="form-control" 
-                      v-model="product.imageUrlDetails" 
                     />
                   </div>
 
@@ -421,7 +386,7 @@ onMounted(async () => {
                       :disabled="isSubmitting"
                       :onClick="deleteProduct"
                     >
-                      🗑️ Löschen
+                      <i class="bi bi-trash me-1"></i>Löschen
                     </Button>
                   </div>
                 </form>
@@ -434,7 +399,7 @@ onMounted(async () => {
             <div class="card border-0 shadow-sm rounded-4">
               <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                  <h4 class="fw-bold mb-0">🍳 Rezepte</h4>
+                  <h4 class="fw-bold mb-0"><i class="bi bi-journal-text me-2"></i>Rezepte</h4>
                   <button 
                     class="btn btn-accent btn-sm"
                     @click="openNewRecipeForm"
@@ -464,10 +429,10 @@ onMounted(async () => {
                         </p>
                         <div class="d-flex flex-wrap gap-2 mt-1">
                           <a v-if="recipe.pdfUrl" :href="recipe.pdfUrl" target="_blank" class="small text-accent">
-                            📄 PDF ansehen
+                            <i class="bi bi-file-earmark-pdf me-1"></i>PDF ansehen
                           </a>
                           <a v-if="recipe.youtubeUrl" :href="recipe.youtubeUrl" target="_blank" class="small text-danger">
-                            ▶️ YouTube Video
+                            <i class="bi bi-youtube me-1"></i>YouTube Video
                           </a>
                         </div>
                       </div>
@@ -477,14 +442,14 @@ onMounted(async () => {
                           @click="openEditRecipeForm(recipe)"
                           title="Bearbeiten"
                         >
-                          ✏️
+                          <i class="bi bi-pencil"></i>
                         </button>
                         <button 
                           class="btn btn-outline-danger btn-sm"
                           @click="deleteRecipe(recipe)"
                           title="Löschen"
                         >
-                          🗑️
+                          <i class="bi bi-trash"></i>
                         </button>
                       </div>
                     </div>
@@ -494,7 +459,8 @@ onMounted(async () => {
                 <!-- Rezept-Formular (Create/Edit) -->
                 <div v-if="showRecipeForm" class="recipe-form mt-4 p-3 border rounded-3 bg-white">
                   <h5 class="fw-bold mb-3">
-                    {{ editingRecipe ? '✏️ Rezept bearbeiten' : '➕ Neues Rezept' }}
+                    <i :class="editingRecipe ? 'bi bi-pencil' : 'bi bi-plus-circle'" class="me-2"></i>
+                    {{ editingRecipe ? 'Rezept bearbeiten' : 'Neues Rezept' }}
                   </h5>
 
                   <div class="mb-3">
@@ -534,7 +500,7 @@ onMounted(async () => {
 
                   <div class="mb-3">
                     <label for="recipeYoutubeUrl" class="form-label">
-                      <span class="text-danger">▶️</span> YouTube-URL (optional)
+                      <i class="bi bi-youtube text-danger me-1"></i>YouTube-URL (optional)
                     </label>
                     <input 
                       type="url" 
@@ -625,6 +591,7 @@ onMounted(async () => {
   background-color: #e54c4c;
   border-color: #e54c4c;
   color: white;
+  border-radius: 8px;
 }
 
 .btn-accent:hover {

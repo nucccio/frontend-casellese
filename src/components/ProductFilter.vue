@@ -173,6 +173,7 @@ onMounted(() => {
   background-color: #e54c4c;
   border-color: #e54c4c;
   color: white;
+  border-radius: 8px;
   transition: all 0.2s ease;
 }
 
