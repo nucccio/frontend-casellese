@@ -60,6 +60,12 @@ const isAdmin = computed(() => userStore.isAdmin)
               <i class="bi bi-people me-2"></i>Nutzerverwaltung
             </router-link>
           </li>
+          <!-- NEU: Link zur Transaktionsansicht -->
+          <li>
+            <router-link class="dropdown-item" to="/admin/favorites">
+              <i class="bi bi-heart-fill me-2"></i>Transaktionen
+            </router-link>
+          </li>
           <li>
             <router-link class="dropdown-item" to="/product/create">
               <i class="bi bi-plus-circle me-2"></i>Produkt erstellen

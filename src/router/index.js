@@ -18,6 +18,7 @@ import AboutView from '@/views/AboutView.vue';
 import ImpressumView from '@/views/ImpressumView.vue';
 import FavoritesView from '@/views/FavoritesView.vue';
 import AdminUsersView from '@/views/AdminUsersView.vue';
+import AdminFavoritesView from '@/views/AdminFavoritesView.vue'; // NEU: Admin-Transaktionsansicht
 import { useUserStore } from '@/stores/user';
 
 // Admin Guard: Prüft ob User eingeloggt UND Admin ist
@@ -143,6 +144,13 @@ const routes = [
     path: '/admin/users',
     name: 'admin-users',
     component: AdminUsersView,
+    beforeEnter: adminGuard  // Nur Admins
+  },
+  // NEU: Admin-Transaktionsansicht (Favoriten aller User)
+  {
+    path: '/admin/favorites',
+    name: 'admin-favorites',
+    component: AdminFavoritesView,
     beforeEnter: adminGuard  // Nur Admins
   }
 ];
