@@ -73,7 +73,7 @@ async function checkAdminRole() {
 // Produkt vom Backend laden
 async function fetchProduct() {
   try {
-    const response = await fetch(`${apiBase}/api/product/${productId}`);
+    const response = await fetch(`https://backend-casellese.onrender.com/api/product/${productId}`);
     if (response.ok) {
       product.value = await response.json();
     } else {
@@ -87,7 +87,7 @@ async function fetchProduct() {
 // Rezepte für das Produkt laden
 async function fetchRecipes() {
   try {
-    const response = await fetch(`${apiBase}/api/products/${productId}/recipes`);
+    const response = await fetch(`https://backend-casellese.onrender.com/api/products/${productId}/recipes`);
     if (response.ok) {
       recipes.value = await response.json();
     } else {
