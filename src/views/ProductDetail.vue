@@ -58,7 +58,7 @@ while (apiBase.endsWith('/')) apiBase = apiBase.slice(0, -1)
 async function checkAdminRole() {
   try {
     const token = await getAccessTokenSilently();
-    const response = await fetch(`${apiBase}/api/profile`, {
+    const response = await fetch(`https://backend-casellese.onrender.com/api/profile`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     if (response.ok) {
@@ -70,10 +70,12 @@ async function checkAdminRole() {
     isAdmin.value = false;
   }
 }
+
 // Produkt vom Backend laden
 async function fetchProduct() {
   try {
     const response = await fetch(`https://backend-casellese.onrender.com/api/product/${productId}`);
+
     if (response.ok) {
       product.value = await response.json();
     } else {
@@ -84,10 +86,12 @@ async function fetchProduct() {
     console.error('Could not fetch product:', e);
   }
 }
+
 // Rezepte für das Produkt laden
 async function fetchRecipes() {
   try {
     const response = await fetch(`https://backend-casellese.onrender.com/api/products/${productId}/recipes`);
+
     if (response.ok) {
       recipes.value = await response.json();
     } else {
