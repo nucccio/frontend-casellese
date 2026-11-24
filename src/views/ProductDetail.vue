@@ -51,8 +51,8 @@ function getYoutubeEmbedUrl(url) {
   return `https://www.youtube.com/embed/${videoId}`;
 }
 
-const rawBase = String(import.meta.env.VITE_API_BASE_URL || '').trim()
-const apiBase = rawBase.endsWith('/') ? rawBase.slice(0, -1) : rawBase
+let apiBase = String(import.meta.env.VITE_API_BASE_URL || '').trim()
+while (apiBase.endsWith('/')) apiBase = apiBase.slice(0, -1)
 
 // Admin-Check
 async function checkAdminRole() {
