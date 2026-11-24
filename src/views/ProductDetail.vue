@@ -55,7 +55,7 @@ function getYoutubeEmbedUrl(url) {
 async function checkAdminRole() {
   try {
     const token = await getAccessTokenSilently();
-    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/profile`, {
+    const response = await fetch(`${String(import.meta.env.VITE_API_BASE_URL).replace(/\/$/, '')}/api/profile`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     if (response.ok) {
@@ -71,7 +71,7 @@ async function checkAdminRole() {
 // Produkt vom Backend laden
 async function fetchProduct() {
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/product/${productId}`);
+    const response = await fetch(`${String(import.meta.env.VITE_API_BASE_URL).replace(/\/$/, '')}/api/product/${productId}`);
     
     if (response.ok) {
       product.value = await response.json();
@@ -87,7 +87,7 @@ async function fetchProduct() {
 // Rezepte für das Produkt laden
 async function fetchRecipes() {
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/${productId}/recipes`);
+    const response = await fetch(`${String(import.meta.env.VITE_API_BASE_URL).replace(/\/$/, '')}/api/products/${productId}/recipes`);
     
     if (response.ok) {
       recipes.value = await response.json();
