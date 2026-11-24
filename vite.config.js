@@ -19,7 +19,14 @@ export default defineConfig({
     },
   },
   server: {
-    port: 5175, // für Auth 0
-    strictPort: true
-  }
+  port: 5175,
+  strictPort: true,
+  proxy: {
+    '/api': {
+      target: 'https://backend-casellese.onrender.com',
+      changeOrigin: true,
+      secure: true,
+    },
+  },
+},
 })
