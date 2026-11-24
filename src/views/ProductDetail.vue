@@ -51,11 +51,14 @@ function getYoutubeEmbedUrl(url) {
   return `https://www.youtube.com/embed/${videoId}`;
 }
 
+const rawBase = String(import.meta.env.VITE_API_BASE_URL || '').trim()
+const apiBase = rawBase.endsWith('/') ? rawBase.slice(0, -1) : rawBase
+
 // Admin-Check
 async function checkAdminRole() {
   try {
     const token = await getAccessTokenSilently();
-    const response = await fetch(`${String(import.meta.env.VITE_API_BASE_URL).replace(/\/$/, '')}/api/profile`, {
+    const response = await fetch(`${apiBase}/api/profile`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     if (response.ok) {
@@ -67,12 +70,10 @@ async function checkAdminRole() {
     isAdmin.value = false;
   }
 }
-
 // Produkt vom Backend laden
 async function fetchProduct() {
   try {
-    const response = await fetch(`${String(import.meta.env.VITE_API_BASE_URL).replace(/\/$/, '')}/api/product/${productId}`);
-    
+    const response = await fetch(`${apiBase}/api/product/${productId}`);
     if (response.ok) {
       product.value = await response.json();
     } else {
@@ -83,12 +84,10 @@ async function fetchProduct() {
     console.error('Could not fetch product:', e);
   }
 }
-
 // Rezepte für das Produkt laden
 async function fetchRecipes() {
   try {
-    const response = await fetch(`${String(import.meta.env.VITE_API_BASE_URL).replace(/\/$/, '')}/api/products/${productId}/recipes`);
-    
+    const response = await fetch(`${apiBase}/api/products/${productId}/recipes`);
     if (response.ok) {
       recipes.value = await response.json();
     } else {
